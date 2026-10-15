@@ -1,0 +1,7 @@
+@model IEnumerable<Cliente>
+@{ ViewData["Title"]="Clientes"; }
+<div class="page-heading"><h1>Clientes</h1><a class="btn btn-primary" asp-action="Create">+ Novo cliente</a></div>
+<form method="get" class="row g-2 mb-3"><div class="col-md-5"><input class="form-control" name="busca" placeholder="Pesquisar nome ou CPF" value="@ViewBag.Busca"></div><div class="col-auto"><button class="btn btn-outline-primary">Pesquisar</button></div></form>
+<div class="card table-responsive"><table class="table table-striped align-middle mb-0"><thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>CPF</th><th>Plano</th><th>Situação</th><th></th></tr></thead><tbody>
+@foreach(var c in Model){<tr><td>@c.Id</td><td>@c.Nome</td><td>@c.Email</td><td>@c.Cpf</td><td>@c.Plano?.Nome</td><td>@(c.Ativo?"Ativo":"Inativo")</td><td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@c.Id">Editar</a> @if(c.Ativo){<form class="d-inline" method="post" asp-action="Desativar" asp-route-id="@c.Id" onsubmit="return confirm('Desativar este cliente?')"><button class="btn btn-sm btn-outline-danger">Desativar</button></form>}</td></tr>}
+</tbody></table></div>

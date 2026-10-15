@@ -1,0 +1,41 @@
+name: gestao-clientes-legacy
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gestao-clientes-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-SenhaForte123!}"
+      MSSQL_PID: Developer
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - rede-gestao
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/1433' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+  mvc:
+    build:
+      context: .
+      dockerfile: src/GestaoClientes.Mvc/Dockerfile
+    container_name: gestao-clientes-mvc
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__GestaoClientes: "Server=sqlserver,1433;Database=DbGestaoClientes;User Id=sa;Password=${MSSQL_SA_PASSWORD:-SenhaForte123!};TrustServerCertificate=True;Encrypt=True"
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - rede-gestao
+networks:
+  rede-gestao:
+volumes:
+  sqlserver_data:

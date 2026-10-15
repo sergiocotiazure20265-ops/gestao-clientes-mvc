@@ -1,0 +1,6 @@
+@model IEnumerable<Plano>
+@{ ViewData["Title"]="Planos"; }
+<div class="page-heading"><h1>Planos</h1><a class="btn btn-primary" asp-action="Create">+ Novo plano</a></div>
+<div class="card table-responsive"><table class="table table-striped align-middle mb-0"><thead><tr><th>ID</th><th>Nome</th><th>Valor mensal</th><th>Situação</th><th></th></tr></thead><tbody>
+@foreach(var p in Model){<tr><td>@p.Id</td><td>@p.Nome</td><td>@p.ValorMensal.ToString("C")</td><td>@(p.Ativo?"Ativo":"Inativo")</td><td><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@p.Id">Editar</a></td></tr>}
+</tbody></table></div>
